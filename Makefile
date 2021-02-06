@@ -12,64 +12,71 @@
 
 NAME = libftprintf.a
 
-BASE_FILES.O = ft_printf.o
+SRC_PATH = src
+SRC_NAME = 	ft_printf.c				\
+			ft_flag_parser.c		\
+			ft_parser.c				\
+			ft_precision_parser.c	\
+			ft_type_parser.c		\
+			ft_width_parser.c		\
+			ft_processor.c			\
+			ft_char_type.c			\
+			ft_string_type.c		\
+			ft_percent_type.c		\
+			ft_int_type.c			\
+			ft_un_int_type.c		\
+			ft_pointer_type.c		\
+			ft_un_x_type.c			\
+			ft_un_o_type.c
 
-LIB_FILES.O = ft_isddigit.o \
-			ft_max.o \
-			ft_nbr_len.o \
-			ft_un_nbr_base_len.o \
-			ft_putchar_n.o \
-			ft_putnbr.o \
-			ft_un_putnbr.o \
-			ft_strlen.o \
-			ft_atoii.o \
+OBJ_PATH = objs
+OBJ_NAME = $(SRC_NAME:.c=.o)
 
-PARS_FILES.O = ft_flag_parser.o \
-			 ft_parser.o \
-			 ft_precision_parser.o \
-			 ft_type_parser.o \
-			 ft_width_parser.o
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -g -I include -I libft/includes
+LDFLAGS = -L libft
+LDLIBS = -lft
 
-PROC_FILES.O = ft_processor.o \
-			 ft_char_type.o \
-			 ft_string_type.o \
-			 ft_percent_type.o \
-			 ft_int_type.o \
-			 ft_un_int_type.o \
-			 ft_pointer_type.o \
-			 ft_un_x_type.o \
-			 ft_un_o_type.o
+SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
+OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
 
-ALL.O = $(BASE_FILES.O) $(LIB_FILES.O) $(PARS_FILES.O) $(PROC_FILES.O)
+.PHONY: all clean fclean re libft  clean_libft  fclean_libft  re_libft
 
-all: $(NAME)
+all: libft $(NAME)
 
-$(NAME): all_o
-	ar rc $(NAME) $(ALL.O)
-	ranlib $(NAME)
+$(NAME): $(OBJ) libft/libft.a
+	ar rc $(NAME) $(OBJ)
 
-all_o: $(BASE_FILES.O) $(LIB_FILES.O) $(PARS_FILES.O) $(PROC_FILES.O)
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
+	@mkdir -pv $(OBJ_PATH)
+	@$(CC) $(CFLAGS) -c $< $(CFLAGS) -o $@
 
-$(BASE_FILES.O): %.o: %.c includes/ft_printf.h
-	gcc -I includes/ -Wall -Wextra -Werror -c $< -o $@
+libft:
+	@make -C libft
 
-$(LIB_FILES.O): %.o: lib/%.c includes/ft_printf.h
-	gcc -I includes/ -Wall -Wextra -Werror -c $< -o $@
-
-$(PARS_FILES.O): %.o: parser/%.c includes/ft_printf.h
-	gcc -I includes/ -Wall -Wextra -Werror -c $< -o $@
-
-$(PROC_FILES.O): %.o: processor/%.c includes/ft_printf.h
-	gcc -I includes/ -Wall -Wextra -Werror -c $< -o $@
-
-bonus: all
+libft_bonus:
+	@make -C libft bonus
 
 clean:
-	rm -rf $(PROC_FILES.O) $(PARS_FILES.O) $(LIB_FILES.O) $(BASE_FILES.O)
+	@make -C libft clean
+	@rm -f $(OBJ)
+	@rmdir $(OBJ_PATH) 2> /dev/null || true
 
-fclean: clean
-	rm -rf $(NAME)
+clean_libft:
+	@make -C libft clean
+
+fclean_libft:
+	@make -C libft fclean
+
+fclean_ft_printf:
+	@rm -rf $(OBJ_PATH)
+	@rm -f $(NAME)
+
+fclean: fclean_ft_printf fclean_libft
 
 re: fclean all
 
-.PHONY: all all_o bonus fclean clean re
+re_libft:
+	@make -C libft re
+
+bonus: all
