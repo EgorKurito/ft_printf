@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = libft.a
-HEADER = includes/libft.h
+HEADER = ../include/libft.h
 FLAG = -Wall -Wextra -Werror
 OPTION = -c
 
@@ -103,7 +103,7 @@ $(NAME): $(OBJS)
 	@echo "$(NAME) indexed"
 
 %.o: %.c $(HEADER)
-	@gcc -c -Wall -Werror -Wextra -I includes/ $< -o $@
+	@gcc -c -Wall -Werror -Wextra -I ../include/ $< -o $@
 
 clean:
 	@rm -f $(OBJS)

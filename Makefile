@@ -45,9 +45,10 @@ OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
 all: libft $(NAME)
 
 $(NAME): $(OBJ) libft/libft.a
-	ar rc $(NAME) $(OBJ)
+	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c 
 	@mkdir -pv $(OBJ_PATH)
 	@$(CC) $(CFLAGS) -c $< $(CFLAGS) -o $@
 
